@@ -46,7 +46,7 @@ export class UserService {
             userTown.userId = savedUser.id;
             await queryRunner.manager.save(userTown);
             await queryRunner.commitTransaction();
-            const payload = { ...savedUser };
+            const payload = { id: savedUser.id };
             const accessToken = jwt.sign(payload, this.config.jwtSecret);
             return new Auth({
                 accessToken: accessToken,
@@ -65,8 +65,8 @@ export class UserService {
         return `This action returns all user`;
     }
 
-    findOne(id: number) {
-        return `This action returns a #${id} user`;
+    async findOne(phone: string) {
+        return await this.userRepo.findOne({ where: { phone: phone } });
     }
 
     update(id: number, updateUserDto: UpdateUserDto) {
