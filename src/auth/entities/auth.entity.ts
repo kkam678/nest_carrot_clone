@@ -4,7 +4,7 @@ export class Auth {
     @Expose()
     accessToken: string;
 
-    constructor(partial: Partial<Auth>) {
-        Object.assign(this, partial);
+    constructor(accessToken: string) {
+        this.accessToken = accessToken;
     }
 }

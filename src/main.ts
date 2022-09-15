@@ -5,6 +5,7 @@ import path from 'path';
 import { ValidationPipe } from './validation.pipe';
 import { TransformInterceptor } from './transform.interceptor';
 import { ClassSerializerInterceptor } from '@nestjs/common';
+import { LocalAuthGuard } from './auth/local-auth.guard';
 
 // dotenv.config({
 //     path: '.env',

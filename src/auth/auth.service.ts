@@ -7,20 +7,32 @@ import { UpdateAuthDto } from './dto/update-auth.dto';
 import * as jwt from 'jsonwebtoken';
 import authConfig from '../config/authConfig';
 import { ConfigType } from '@nestjs/config';
+import { UserService } from '../user/user.service';
+import { JwtService } from '@nestjs/jwt';
+import { Auth } from './entities/auth.entity';
 @Injectable()
 export class AuthService {
     constructor(
-        @InjectRepository(User) private userRepo: Repository<User>,
+        private userService: UserService,
+        private jwtService: JwtService,
         @Inject(authConfig.KEY) private config: ConfigType<typeof authConfig>,
     ) {}
 
-    create(user: User) {
-        const payload = { id: user.id };
-        return jwt.sign(payload, this.config.jwtSecret, {
-            expiresIn: this.config.jwtExpiresIn,
-            // audience: 'example.com',
-            // issuer: 'example.com',
-        });
+    async validateUser(phone: string, authNumber: string): Promise<any> {
+        //TODO:: 유저 인증번호 체크 로직 추가해야함
+        const user = await this.userService.findOne(phone);
+        if (user) {
+            const { ...result } = user;
+            console.log(result);
+            return result;
+        }
+        return null;
+    }
+
+    // 로그인 기능이 추가되었다.
+    async login(user: any) {
+        const payload = { username: user.phone, sub: user.userId };
+        return new Auth(this.jwtService.sign(payload));
     }
 
     verify(jwtString: string) {

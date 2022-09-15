@@ -9,27 +9,28 @@ import {
     UseGuards,
     Headers,
     Req,
+    Request,
 } from '@nestjs/common';
-import { AuthGuard } from '../auth.guard';
+
 import { UserService } from '../user/user.service';
 import { AuthService } from './auth.service';
 import { CreateAuthDto } from './dto/create-auth.dto';
 import { UpdateAuthDto } from './dto/update-auth.dto';
+import { LocalAuthGuard } from './local-auth.guard';
 
 @Controller('auth')
 export class AuthController {
-    constructor(
-        private readonly userService: UserService,
-        private readonly authService: AuthService,
-    ) {}
+    constructor(private readonly authService: AuthService) {}
 
-    @Post()
-    async create(@Body() createAuthDto: CreateAuthDto) {
-        const user = await this.userService.findOne(createAuthDto.phone);
-        return this.authService.create(user);
+    @UseGuards(LocalAuthGuard)
+    @Post('login')
+    async login(@Req() req) {
+        console.log(req.user);
+        return req.user;
+        // const user = await this.userService.findOne(createAuthDto.phone);
+        // return this.authService.login(user);
     }
 
-    @UseGuards(AuthGuard)
     @Get()
     authCheck(@Headers() headers: any, @Req() req) {
         console.log(req.user);

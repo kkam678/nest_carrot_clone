@@ -16,5 +16,6 @@ import { Town } from '../town/entities/town.entity';
     ],
     controllers: [UserController],
     providers: [UserService],
+    exports: [UserService],
 })
 export class UserModule {}

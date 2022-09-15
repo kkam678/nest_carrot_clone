@@ -1,5 +1,6 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Post, Request, UseGuards } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { AuthGuard } from '@nestjs/passport';
 import { AppService } from './app.service';
 
 @Controller()
@@ -11,7 +12,6 @@ export class AppController {
 
     @Get()
     getHello(): string {
-        return this.configService.get('DB_USER');
         return this.appService.getHello();
     }
 }

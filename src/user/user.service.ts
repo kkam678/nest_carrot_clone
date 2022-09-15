@@ -48,9 +48,8 @@ export class UserService {
             await queryRunner.commitTransaction();
             const payload = { id: savedUser.id };
             const accessToken = jwt.sign(payload, this.config.jwtSecret);
-            return new Auth({
-                accessToken: accessToken,
-            });
+
+            return new Auth(accessToken);
         } catch (err) {
             console.log(err);
             // since we have errors lets rollback the changes we made
