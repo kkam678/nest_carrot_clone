@@ -31,7 +31,7 @@ export class AuthService {
 
     // 로그인 기능이 추가되었다.
     async login(user: any) {
-        const payload = { username: user.phone, sub: user.userId };
+        const payload = { username: user.phone, sub: user.id };
         return new Auth(this.jwtService.sign(payload));
     }
 

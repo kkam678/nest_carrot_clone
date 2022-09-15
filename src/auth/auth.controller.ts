@@ -16,6 +16,7 @@ import { UserService } from '../user/user.service';
 import { AuthService } from './auth.service';
 import { CreateAuthDto } from './dto/create-auth.dto';
 import { UpdateAuthDto } from './dto/update-auth.dto';
+import { JwtAuthGuard } from './jwt-auth.guard';
 import { LocalAuthGuard } from './local-auth.guard';
 
 @Controller('auth')
@@ -30,7 +31,7 @@ export class AuthController {
         // const user = await this.userService.findOne(createAuthDto.phone);
         // return this.authService.login(user);
     }
-
+    @UseGuards(JwtAuthGuard)
     @Get()
     authCheck(@Headers() headers: any, @Req() req) {
         console.log(req.user);
