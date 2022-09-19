@@ -10,10 +10,15 @@ import {
 } from 'typeorm';
 import { UserTown } from './user-town.entity';
 
+type Status = 1 | 2 | 3;
+
 @Entity('user')
 export class User {
     @PrimaryGeneratedColumn()
     id: number;
+
+    @Column()
+    status: Status;
 
     @Column({ length: 11 })
     phone: string;

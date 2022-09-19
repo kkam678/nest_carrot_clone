@@ -1,4 +1,16 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import {
+    Controller,
+    Get,
+    Post,
+    Body,
+    Patch,
+    Param,
+    Delete,
+    UseGuards,
+    Req,
+    Res,
+    HttpCode,
+} from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -19,25 +31,23 @@ export class UserController {
         return this.userService.create(createUserDto);
     }
 
-    @Get()
-    findAll() {
-        return this.userService.findAll();
-    }
-
-    // 방금 만든 따끈따끈한 AuthGuard
     @UseGuards(JwtAuthGuard)
-    @Get(':id')
-    findOne(@Param('id') id: string) {
-        return this.userService.findOne(id);
+    @Get()
+    findOne(@Req() req) {
+        return this.userService.findOne(+req.user.userId);
     }
 
-    @Patch(':id')
-    update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-        return this.userService.update(+id, updateUserDto);
+    @UseGuards(JwtAuthGuard)
+    @Patch()
+    update(@Req() req, @Body() updateUserDto: UpdateUserDto) {
+        return this.userService.update(+req.user.userId, updateUserDto);
     }
 
-    @Delete(':id')
-    remove(@Param('id') id: string) {
-        return this.userService.remove(+id);
+    @UseGuards(JwtAuthGuard)
+    @HttpCode(204)
+    @Delete()
+    remove(@Req() req) {
+        this.userService.remove(+req.user.userId);
+        return null;
     }
 }

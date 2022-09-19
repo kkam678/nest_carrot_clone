@@ -6,6 +6,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { UserTown } from './entities/user-town.entity';
 import { Town } from '../town/entities/town.entity';
+import { JwtStrategy } from '../auth/jwt.strategy';
+import { PassportModule } from '@nestjs/passport';
 
 @Module({
     imports: [
@@ -15,7 +17,7 @@ import { Town } from '../town/entities/town.entity';
         TypeOrmModule.forFeature([User, UserTown, Town]),
     ],
     controllers: [UserController],
-    providers: [UserService],
+    providers: [UserService, JwtStrategy],
     exports: [UserService],
 })
 export class UserModule {}

@@ -31,11 +31,11 @@ export class AuthController {
         // const user = await this.userService.findOne(createAuthDto.phone);
         // return this.authService.login(user);
     }
+
     @UseGuards(JwtAuthGuard)
     @Get()
-    authCheck(@Headers() headers: any, @Req() req) {
-        console.log(req.user);
-        return this.authService.authCheck();
+    authCheck(@Req() req) {
+        return this.authService.authCheck(req.user);
     }
 
     @Patch(':id')

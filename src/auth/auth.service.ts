@@ -20,7 +20,7 @@ export class AuthService {
 
     async validateUser(phone: string, authNumber: string): Promise<any> {
         //TODO:: 유저 인증번호 체크 로직 추가해야함
-        const user = await this.userService.findOne(phone);
+        const user = await this.userService.findOneByPhone(phone);
         if (user) {
             const { ...result } = user;
             console.log(result);
@@ -29,7 +29,6 @@ export class AuthService {
         return null;
     }
 
-    // 로그인 기능이 추가되었다.
     async login(user: any) {
         const payload = { username: user.phone, sub: user.id };
         return new Auth(this.jwtService.sign(payload));
@@ -53,8 +52,8 @@ export class AuthService {
         }
     }
 
-    authCheck() {
-        return `This action returns all auth`;
+    authCheck(user: User) {
+        return this.login(user);
     }
 
     update(id: number, updateAuthDto: UpdateAuthDto) {

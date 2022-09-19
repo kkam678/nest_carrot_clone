@@ -1,4 +1,10 @@
-import { Inject, Injectable } from '@nestjs/common';
+import {
+    BadRequestException,
+    ConflictException,
+    Inject,
+    Injectable,
+    InternalServerErrorException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Town } from '../town/entities/town.entity';
 import { DataSource, EntityManager, Repository } from 'typeorm';
@@ -64,15 +70,36 @@ export class UserService {
         return `This action returns all user`;
     }
 
-    async findOne(phone: string) {
+    async findOneByPhone(phone: string) {
         return await this.userRepo.findOne({ where: { phone: phone } });
     }
 
-    update(id: number, updateUserDto: UpdateUserDto) {
-        return `This action updates a #${id} user`;
+    async findOne(id: number): Promise<User> {
+        const user = await this.userRepo.findOne({ where: { id: id } });
+        if (user.status == 2) {
+            throw new BadRequestException('휴면중인 유저입니다.');
+        }
+        if (user.status == 3) {
+            throw new BadRequestException('탈퇴된 유저입니다.');
+        }
+        return user;
     }
 
-    remove(id: number) {
-        return `This action removes a #${id} user`;
+    async update(id: number, updateUserDto: UpdateUserDto) {
+        const user = new User();
+        user.email = updateUserDto.email;
+        if (!(await this.userRepo.update(id, user))) {
+            throw new InternalServerErrorException();
+        }
+        return this.findOne(id);
+    }
+
+    async remove(id: number) {
+        const user = new User();
+        user.status = 3;
+        if (!(await this.userRepo.update(id, user))) {
+            throw new InternalServerErrorException();
+        }
+        return true;
     }
 }
